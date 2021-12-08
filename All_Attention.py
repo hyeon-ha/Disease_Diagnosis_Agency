@@ -3,7 +3,7 @@
 # 3명이 각자 한 링크씩 맡아서 크롤링 작업을 진행하겠습니다.
 # 컬럼명은 ['Disease', 'Symptom']로 진행합니다.
 # 파일명은 'disease_{}.csv'.format('health', 'cancer', 'epidemic')으로 해주세요.
-# 질병 및 장애 : https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoMain.do
+# 질병 및 장애 : https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoMain.do?lclasSn=1
 # //*[@id="gnrlzHealthInfoMainForm"]/div[3]/ul/li[1]/a  맨 처음
 # //*[@id="gnrlzHealthInfoMainForm"]/div[3]/ul/li[2]/a
 # //*[@id="gnrlzHealthInfoMainForm"]/div[3]/ul/li[99]/a
