@@ -15,7 +15,7 @@
 # //*[@id="cancerList"]/ul/li[99]/a/span[1]
 # 증상 : //*[@id="cancerMenu"]/ul[4]/li[2]/a
 # 증상 내용 : //*[@id="div_page"]/p
-# 감염병 : https://www.kdca.go.kr/npt/biz/npp/portal/nppLwcrIcdMain.do#042ND0614
+# 감염병 : https://www.kdca.go.kr/npt/biz/npp/portal/nppLwcrIcdMain.do#042ND0614h
 # //*[@id="gTd"]/a[1]  가
 # //*[@id="gTd"]/a[2]
 # //*[@id="nTd"]/a[1]  나
@@ -30,8 +30,6 @@ from selenium import webdriver
 import pandas as pd
 from selenium.common.exceptions import NoSuchElementException
 import time
-import requests
-from bs4 import BeautifulSoup
 
 options = webdriver.ChromeOptions()
 # options.add_argument('headless')
@@ -39,24 +37,7 @@ options.add_argument('lang=ko_KR')
 options.add_argument('disable_gpu')
 
 driver = webdriver.Chrome('./chromedriver', options=options)
-# 파일의 요소를 class를 따오면 된다
-# webpage = requests.get("https://www.kdca.go.kr/npt/biz/npp/portal/nppLwcrIcdMain.do#042ND0204")
-# soup = BeautifulSoup(webpage.content,"html.parser")
-#
-# print(soup)
-# # <a href="javascript:fn_sumryMain('ND0204','04');" class="btn-list" data-icdcd="ND0204">•간흡충증</a>
-# < ahref = "javascript:fn_sumryMain('NB0001','02');"class ="btn-list" data-icdcd="NB0001" > •결핵 < / a >
-#
-# < a
-# href = "javascript:fn_sumryMain('NA0003','01');"
-# class ="btn-list" data-icdcd="NA0003" > •라싸열 < / a >
-# Disease_Diagnosis_class = ' '
-# url = 'https://www.kdca.go.kr/npt/biz/npp/portal/nppLwcrIcdMain.do#042ND0614'
-# titles = []
-# reviews = []
-# try :
-#     driver.get(url)
-#     crawling_disease_health = ''
+
 # 첫번째 <a href="javascript:fn_sumryMain('NA0001','01');" class="btn-list" data-mainicdcd="NA0001">에볼라바이러스병</a>
 # 두번쨰 <a href="javascript:fn_sumryMain('NA0003','01');" class="btn-list" data-mainicdcd="NA0003">라싸열</a>
 # 1급   // *[ @ id = "tabs-1"] / div[2] / div / div / div / table / tbody / tr[1] / td[1] / a
@@ -65,19 +46,40 @@ driver = webdriver.Chrome('./chromedriver', options=options)
 # 4급   // *[ @ id = "tabs-1"] / div[5] / div / div / div / table / tbody / tr[62] / td[1] / a
 #    // *[ @ id = "tabs-1"] / div[5] / div / div / div / table / tbody / tr[1] / td[1] / a
 
+# disease_class_xpath = '// *[ @ id = "tabs-1"] / div[{}] / div / div / div / table / tbody / tr[{}] / td[1] / a'.format(i, j)
+
+# //*[@id="tabs-1"]/div[2]/div/div/div/table/tbody/tr[17]/td[1]/a
+# //*[@id="tabs-1"]/div[3]/div/div/div/table/tbody/tr[22]/td[1]/a
+# //*[@id="tabs-1"]/div[4]/div/div/div/table/tbody/tr[26]/td[1]/a
+# //*[@id="tabs-1"]/div[5]/div/div/div/table/tbody/tr[62]/td[1]/a
+
+## 질병관련 데이터 xpath
+# //*[@id="contentDiv"]
+#  =//*[@id="contentDiv"]
+
+url = 'https://www.kdca.go.kr/npt/biz/npp/portal/nppLwcrIcdMain.do#011NA0001'
+Diseases = []
+Symptom = []
+Disease_counts = [ 17, 22, 26, 62 ]
+Diseases_data = '//*[@id="contentDiv"]'
+
 try:
-    url = 'https://www.kdca.go.kr/npt/biz/npp/portal/nppLwcrIcdMain.do#011NA0001'
-    Diseases = []
-    Symptom = []
     for i in range(2,6):
-        try:
-            for i in range(1,63):
-                driver.get(url)
-                disease_class_xpath = '// *[ @ id = "tabs-1"] / div[{}] / div / div / div / table / tbody / tr[{}] / td[1] / a'.format(i,j)
-                disease = driver.find_element_by_xpath(disease_class_xpath).text
-                Diseases.append(disease)
-                driver.find_element_by_xpath(disease_class_xpath).click()
+        for j in range(1,Disease_counts[i-2]):
+            driver.get(url)
+            disease_class_xpath = '//*[@id="tabs-1"]/div[{}]/div/div/div/table/tbody/tr[{}]/td[1]/a'.format(i,j)
+            disease = driver.find_element_by_xpath(disease_class_xpath).text
+            driver.find_element_by_xpath(disease_class_xpath).click()
+            symptom = driver.find_element_by_xpath(Diseases_data).text
+            Symptom.append(symptom)
+            Diseases.append(disease)
+            print(Symptom)
 
 except:
-    print(error)
-df_disease = pd.DataFrame{'Diseas':}
+    print('error')
+finally:
+    driver.close()
+print(Diseases)
+print(Symptom)
+df_disease = pd.DataFrame({'Disease':Diseases,'Symptom':Symptom})
+df_disease.to_csv('./crawling_data/disease_epidemic.csv')
