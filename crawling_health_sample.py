@@ -26,23 +26,26 @@ try:
         diseases = []
         contents = []
         for j in range(1, 100):
-            disease_name_xpath = '//*[@id="gnrlzHealthInfoMainForm"]/div[3]/ul/li[{}]/a'.format(j)
-            disease = driver.find_element_by_xpath(disease_name_xpath).text
-            new_tap_url = driver.find_element_by_xpath(disease_name_xpath).get_attribute('href')
-            tap_temp = new_tap_url.split(':')
-            if tap_temp[0] == 'http':  # 새창일 경우
+            try:
+                disease_name_xpath = '//*[@id="gnrlzHealthInfoMainForm"]/div[3]/ul/li[{}]/a'.format(j)
+                disease = driver.find_element_by_xpath(disease_name_xpath).text
                 new_tap_url = driver.find_element_by_xpath(disease_name_xpath).get_attribute('href')
-                driver.get(new_tap_url)
+                tap_temp = new_tap_url.split(':')
+                if tap_temp[0] == 'http':  # 새창일 경우
+                    new_tap_url = driver.find_element_by_xpath(disease_name_xpath).get_attribute('href')
+                    driver.get(new_tap_url)
+                    time.sleep(0.2)
+                    content = driver.find_element_by_xpath('//*[@id="tab1"]').text
+                else:
+                    driver.find_element_by_xpath(disease_name_xpath).click()
+                    time.sleep(0.2)
+                    content = driver.find_element_by_xpath('//*[@id="contentsDiv1"]').text
+                diseases.append(disease)
+                contents.append(content)
+                driver.back()
                 time.sleep(0.2)
-                content = driver.find_element_by_xpath('//*[@id="tab1"]').text
-            else:
-                driver.find_element_by_xpath(disease_name_xpath).click()
-                time.sleep(0.2)
-                content = driver.find_element_by_xpath('//*[@id="contentsDiv1"]').text
-            diseases.append(disease)
-            contents.append(content)
-            driver.back()
-            time.sleep(0.2)
+            except:
+                print('{}page_{}_error'.format(i, j))
         df_content_100 = pd.DataFrame({'Disease':diseases, 'Content':contents})
         df_content_100.to_csv('./crawling_data/disease_health_{}.csv'.format(i), index=False)
 except:
