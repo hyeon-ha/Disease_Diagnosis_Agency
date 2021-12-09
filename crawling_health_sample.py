@@ -19,7 +19,7 @@ driver = webdriver.Chrome('./chromedriver', options=options)
 try:
     url = 'https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoMain.do?lclasSn=1'
     driver.get(url)
-    for i in range(2, 7):
+    for i in range(1, 7):
         disease_page_xpath = '//*[@id="gnrlzHealthInfoMainForm"]/div[4]/a[{}]'.format(i)
         driver.find_element_by_xpath(disease_page_xpath).click()
         time.sleep(0.2)
@@ -30,17 +30,15 @@ try:
             disease = driver.find_element_by_xpath(disease_name_xpath).text
             new_tap_url = driver.find_element_by_xpath(disease_name_xpath).get_attribute('href')
             tap_temp = new_tap_url.split(':')
-            if tap_temp[0] == 'http':
+            if tap_temp[0] == 'http':  # 새창일 경우
                 new_tap_url = driver.find_element_by_xpath(disease_name_xpath).get_attribute('href')
                 driver.get(new_tap_url)
                 time.sleep(0.2)
+                content = driver.find_element_by_xpath('//*[@id="tab1"]').text
             else:
                 driver.find_element_by_xpath(disease_name_xpath).click()
                 time.sleep(0.2)
-            try:
                 content = driver.find_element_by_xpath('//*[@id="contentsDiv1"]').text
-            except:
-                content = driver.find_element_by_xpath('//*[@id="tab1"]').text
             diseases.append(disease)
             contents.append(content)
             driver.back()
