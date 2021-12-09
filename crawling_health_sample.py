@@ -31,8 +31,7 @@ try:
                 disease = driver.find_element_by_xpath(disease_name_xpath).text
                 new_tap_url = driver.find_element_by_xpath(disease_name_xpath).get_attribute('href')
                 tap_temp = new_tap_url.split(':')
-                if tap_temp[0] == 'http':  # 새창일 경우
-                    new_tap_url = driver.find_element_by_xpath(disease_name_xpath).get_attribute('href')
+                if tap_temp[0] in ['http', 'https']:  # 새창일 경우
                     driver.get(new_tap_url)
                     time.sleep(0.2)
                     content = driver.find_element_by_xpath('//*[@id="tab1"]').text
