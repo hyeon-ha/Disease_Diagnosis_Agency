@@ -82,4 +82,4 @@ finally:
 print(Diseases)
 print(Symptom)
 df_disease = pd.DataFrame({'Disease':Diseases,'Symptom':Symptom})
-df_disease.to_csv('./crawling_data/disease_epidemic.csv')
+df_disease.to_csv('./crawling_data/disease_epidemic1.csv', index = False)
