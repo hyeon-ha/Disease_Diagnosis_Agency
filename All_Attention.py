@@ -1,9 +1,9 @@
 # crawling 작업
 
 # 3명이 각자 한 링크씩 맡아서 크롤링 작업을 진행하겠습니다.
-# 컬럼명은 ['Disease', 'Symptom']로 진행합니다.
+# 컬럼명은 ['Disease', 'Content']로 진행합니다.
 # 파일명은 'disease_{}.csv'.format('health', 'cancer', 'epidemic')으로 해주세요.
-# 질병 및 장애 : https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoMain.do
+# 질병 및 장애 : https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoMain.do?lclasSn=1
 # //*[@id="gnrlzHealthInfoMainForm"]/div[3]/ul/li[1]/a  맨 처음
 # //*[@id="gnrlzHealthInfoMainForm"]/div[3]/ul/li[2]/a
 # //*[@id="gnrlzHealthInfoMainForm"]/div[3]/ul/li[99]/a
@@ -23,6 +23,6 @@
 # //*[@id="contentDiv"]/p[18]/font/span[2]
 # //*[@id="contentDiv"]/span/font/span/p[9]
 # 크롤링 완료한 데이터는 아래 링크로 올려주세요
-
+# https://drive.google.com/drive/folders/1vKfj3i94UTzqGQKzQ8DwtW0LXsDiK2Qb?usp=sharing
 # 우선 테스트 파이썬 파일 각 이니셜 별로 만들어서 풀리퀘스트 테스트 부탁드립니다.
 
