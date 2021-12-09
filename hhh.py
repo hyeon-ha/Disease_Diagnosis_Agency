@@ -40,7 +40,7 @@ def crawlData():
             disease_list.append(disease_name)
             symptom_list.append(symptom)
     # 데이터 프레임 생성
-    dataframe = pd.DataFrame({'Disease': disease_list, 'Symptom': symptom_list})
+    dataframe = pd.DataFrame({'Disease': disease_list, 'Content': symptom_list})
     # 파일(.csv) 저장
     dataframe.to_csv(f'./{filename}', index=False)
     print(f'"{filename}" is saved.\truntime is {time.time() - start_time:.3f} seconds')
@@ -50,4 +50,3 @@ def crawlData():
 if __name__ == '__main__':
     crawlData()
 
-###1111123123123
