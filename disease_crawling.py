@@ -20,11 +20,11 @@ try:
         Disease = []
         Content = []
         driver.get(start_url)
-        for k in range(1, 3): #페이지
+        for k in range(1, 7): #페이지
             if k >= 2:
                 driver.find_element_by_xpath('//*[@id="gnrlzHealthInfoMainForm"]/div[4]/a[{}]'.format(k)).click()
-            for j in range(1, 3): #데이터
-                print(j, '번째 크롤링 중')
+            for j in range(1, 100): #데이터
+                print(k, '-', j, '번째 크롤링 중')
                 try:
                     disease_xpath = '//*[@id="gnrlzHealthInfoMainForm"]/div[3]/ul/li[{}]/a'.format(j)
                     #cancer_button_xpath = '//*[@id="cancerList"]/ul/li[{}]/a'.format(j)
@@ -37,6 +37,7 @@ try:
                         Content.append(content)
                         driver.back()
                     except:
+                        new_tap_url = driver.find_element_by_xpath(disease_xpath).get_attribute('href')
                         print('main text error')
                 except:
                     print('error')

@@ -19,34 +19,34 @@ driver = webdriver.Chrome('./chromedriver', options=options)
 try:
     url = 'https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoMain.do?lclasSn=1'
     driver.get(url)
-    for i in range(1, 7):
-        disease_page_xpath = '//*[@id="gnrlzHealthInfoMainForm"]/div[4]/a[{}]'.format(i)
-        driver.find_element_by_xpath(disease_page_xpath).click()
-        time.sleep(0.2)
+    for i in range(1, 6):
         diseases = []
         contents = []
+        if i >= 2:
+            driver.find_element_by_xpath('//*[@id="gnrlzHealthInfoMainForm"]/div[4]/a[{}]'.format(i)).click()
         for j in range(1, 100):
+            print(i, 'page', j, 'crawling')
             try:
                 disease_name_xpath = '//*[@id="gnrlzHealthInfoMainForm"]/div[3]/ul/li[{}]/a'.format(j)
                 disease = driver.find_element_by_xpath(disease_name_xpath).text
                 new_tap_url = driver.find_element_by_xpath(disease_name_xpath).get_attribute('href')
                 tap_temp = new_tap_url.split(':')
-                if tap_temp[0] == 'http':  # 새창일 경우
-                    new_tap_url = driver.find_element_by_xpath(disease_name_xpath).get_attribute('href')
+                if tap_temp[0] in ['http', 'https']:  # 새창일 경우
                     driver.get(new_tap_url)
-                    time.sleep(0.2)
                     content = driver.find_element_by_xpath('//*[@id="tab1"]').text
                 else:
                     driver.find_element_by_xpath(disease_name_xpath).click()
-                    time.sleep(0.2)
-                    content = driver.find_element_by_xpath('//*[@id="contentsDiv1"]').text
+                    content = driver.find_element_by_xpath('//*[@id="gnrlzHealthInfoViewForm"]/div[2]/div[2]').text
                 diseases.append(disease)
                 contents.append(content)
                 driver.back()
-                time.sleep(0.2)
             except:
                 print('{}page_{}_error'.format(i, j))
         df_content_100 = pd.DataFrame({'Disease':diseases, 'Content':contents})
-        df_content_100.to_csv('./crawling_data/disease_health_{}.csv'.format(i), index=False)
+        df_content_100.to_csv('./crawling/disease_health_{}.csv'.format(i), index=False)
 except:
     print('totally error')
+
+
+#//*[@id="contentsDiv1"]
+#//*[@id="gnrlzHealthInfoViewForm"]/div[2]/div[2]
