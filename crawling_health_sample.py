@@ -12,6 +12,7 @@ options.add_argument('lang=ko_KR')
 options.add_argument('disable_gpu')
 
 driver = webdriver.Chrome('./chromedriver', options=options)
+# driver.implicitly_wait(10)
 
 # //*[@id="gnrlzHealthInfoMainForm"]/div[3]/ul/li[1]/a
 # //*[@id="gnrlzHealthInfoMainForm"]/div[3]/ul/li[99]/a
@@ -33,15 +34,26 @@ try:
                 tap_temp = new_tap_url.split(':')
                 if tap_temp[0] in ['http', 'https']:  # 새창일 경우
                     driver.get(new_tap_url)
-                    content = driver.find_element_by_xpath('//*[@id="tab1"]').text
+                    time.sleep(0.3)
+                    try:
+                        content = driver.find_element_by_xpath('//*[@id="tab1"]').text
+                    except:
+                        content = driver.find_element_by_xpath('//*[@id="div_page"]').text
+                    print('{}page_{}번째 새창 크롤링중'.format(i, j))
                 else:
-                    driver.find_element_by_xpath(disease_name_xpath).click()
+                    try:
+                        driver.find_element_by_xpath(disease_name_xpath).click()
+                    except:
+                        driver.find_element_by_xpath(disease_name_xpath).send_keys(Keys.ENTER)
+                    time.sleep(0.3)
                     content = driver.find_element_by_xpath('//*[@id="gnrlzHealthInfoViewForm"]/div[2]/div[2]').text
+                    print('{}page_{}번째 크롤링중'.format(i, j))
                 diseases.append(disease)
                 contents.append(content)
-                driver.back()
             except:
                 print('{}page_{}_error'.format(i, j))
+                driver.back()
+                time.sleep(0.2)
         df_content_100 = pd.DataFrame({'Disease':diseases, 'Content':contents})
         df_content_100.to_csv('./crawling/disease_health_{}.csv'.format(i), index=False)
 except:
