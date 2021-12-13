@@ -16,8 +16,6 @@ df.drop_duplicates(inplace=True)
 df.reset_index(inplace=True)
 print(df.head())
 print(df.tail())
-regex_0 = '\(.*\)|\s-\s.*'
-regex_1 = '\[.*\]|\s-\s.*'
 df['Disease'] = df['Disease'].str.replace(' ','')
 df["Disease"] = df["Disease"].str.replace(pat=r'[^가-힣A-Za-z0-9]', repl=r'', regex=True)
 # for i in range(len(df)):
