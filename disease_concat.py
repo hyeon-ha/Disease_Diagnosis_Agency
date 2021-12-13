@@ -16,8 +16,8 @@ df.drop_duplicates(inplace=True)
 df.reset_index(inplace=True)
 print(df.head())
 print(df.tail())
-regex_0 = '\([^)]*\)'
-regex_1 = '\[[^)]*\]'
+regex_0 = '\(.*\)|\s-\s.*'
+regex_1 = '\[.*\]|\s-\s.*'
 for i in range(len(df)):
     temp = df['Disease'][i]
     for j in range(len(temp) - 5):
@@ -29,8 +29,8 @@ for i in range(len(df)):
             if count >= 5:
                 df['Disease'][i] = temp[:j]
                 break
-    df['Disease'][i] = re.sub(regex_0,'',temp)
-    df['Disease'][i] = re.sub(regex_1,'',temp)
+    df['Disease'][i] = re.sub(regex_0,'',df['Disease'][i])
+    df['Disease'][i] = re.sub(regex_1,'',df['Disease'][i])
 df["Disease"] = df["Disease"].str.replace(pat=r'[^\w]', repl=r'', regex=True)
 df = df[['Disease', 'Content']]
 df.info()
