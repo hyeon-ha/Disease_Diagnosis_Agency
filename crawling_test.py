@@ -1,6 +1,7 @@
 from selenium import webdriver
 import pandas as pd
 from selenium.common.exceptions import NoSuchElementException
+import re
 import time
 
 options = webdriver.ChromeOptions()
@@ -12,33 +13,44 @@ options.add_argument('disable_gpu')
 driver = webdriver.Chrome('./chromedriver', options=options)
 
 try:
-    for i in range(1, 2):
-        url = 'https://www.cancer.go.kr/lay1/program/S1T211C223/cancer/list.do?page={}'.format(i)
-        Disease = []
-        Content = []
-        for j in range(1, 100):
-            print(j, '번째 크롤링 중')
+    url = 'https://www.amc.seoul.kr/asan/healthinfo/disease/diseaseList.do?diseaseKindId=C000020'
+    driver.get(url)
+    Disease = []
+    Content = []
+    for i in range(1, 2): #페이지수
+        if i >= 2:
+            driver.find_element_by_xpath('//*[@id="content"]/div[2]/div[2]/span/a[{}]'.format(i)).click()
+        for j in range(1, 21): #데이터수
+            print(i, 'page', j, '번째 크롤링 중')
             try:
-                driver.get(url)
-                cancer_xpath = '//*[@id="cancerList"]/ul/li[{}]/a/span[1]'.format(j)
-                cancer_button_xpath = '//*[@id="cancerList"]/ul/li[{}]/a'.format(j)
-                title = driver.find_element_by_xpath(cancer_xpath).text
+                asan_title_xpath = '//*[@id="listForm"]/div/div/ul/li[{}]/div[2]/strong/a'.format(j)
+                title = driver.find_element_by_xpath(asan_title_xpath).text
                 print(title)
-                driver.find_element_by_xpath(cancer_button_xpath).click()
                 try:
-                    content = driver.find_element_by_xpath('//*[@id="div_page"]').text
+                    driver.find_element_by_xpath(asan_title_xpath).click()
+                    content = driver.find_element_by_xpath('//*[@id="content"]/div[2]/div[1]').text
+                    #time.sleep(3)
+                    # print(content)
                     Disease.append(title)
+                    # print(len(Disease))
                     Content.append(content)
+                    # print(len(Content))
+                    driver.back()
                 except:
                     print('main text error')
             except:
-                print('error')
-
-            df_content = pd.DataFrame({'Disease':Disease, 'Content':Content})
-            df_content.to_csv('./crawling/disease_{}.csv'.format('cancer'), index=False)
+                print('error', '내용없음')
+        print(len(Disease))
+    df_content = pd.DataFrame({'Disease': Disease, 'Content': Content})
+    df_content.to_csv('./crawling/disease_asan_20.csv', index=False)
 
 except:
     print('totally error')
+
+driver.close()
+
+print('-------------------------------------------------------------------------------------')
+print(df_content)
 
 
 #//*[@id="cancerList"]/ul/li[1]/a
@@ -55,3 +67,25 @@ except:
 #//*[@id="div_page"]
 #//*[@id="div_page"]
 #//*[@id="div_page"]
+
+#----------------------
+#//*[@id="listForm"]/div/div/ul/li[1]/div[2]/strong/a
+#//*[@id="listForm"]/div/div/ul/li[2]/div[2]/strong/a
+#//*[@id="listForm"]/div/div/ul/li[3]/div[2]/strong/a
+#//*[@id="listForm"]/div/div/ul/li[20]/div[2]/strong/a
+#//*[@id="listForm"]/div/div/ul/li[1]/div[2]/strong/a
+
+
+#//*[@id="content"]/div[2]/div[1]
+#//*[@id="content"]/div[2]/div[1]
+#//*[@id="content"]/div[2]/div[1]
+#//*[@id="content"]/div[2]/div[1]
+
+#//*[@id="content"]/div[2]/div[2]/span/a[1]
+#//*[@id="content"]/div[2]/div[2]/span/a[2]
+#//*[@id="content"]/div[2]/div[2]/span/a[3]
+#//*[@id="content"]/div[2]/div[2]/span/a[8]
+
+#//*[@id="diseaTab"]/div[3]/ul
+
+#//*[@id="content"]/div[2]/div[1]
