@@ -18,7 +18,10 @@ print(df.head())
 print(df.tail())
 regex_0 = '\(.*\)|\s-\s.*'
 regex_1 = '\[.*\]|\s-\s.*'
+df['Disease'] = df['Disease'].str.replace(' ','')
 for i in range(len(df)):
+    df['Disease'][i] = re.sub(regex_0, '', df['Disease'][i])
+    df['Disease'][i] = re.sub(regex_1, '', df['Disease'][i])
     temp = df['Disease'][i]
     for j in range(len(temp) - 5):
         if 65 <= ord(temp[j]) <= 122:
@@ -29,9 +32,7 @@ for i in range(len(df)):
             if count >= 5:
                 df['Disease'][i] = temp[:j]
                 break
-    df['Disease'][i] = re.sub(regex_0,'',df['Disease'][i])
-    df['Disease'][i] = re.sub(regex_1,'',df['Disease'][i])
-df["Disease"] = df["Disease"].str.replace(pat=r'[^\w]', repl=r'', regex=True)
+df["Disease"] = df["Disease"].str.replace(pat=r'[^가-힣A-Za-z0-9]', repl=r'', regex=True)
 df = df[['Disease', 'Content']]
 df.info()
 df.to_csv('./crawling_data/disease_all_index.csv')
