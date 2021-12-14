@@ -1,10 +1,15 @@
+# version 1.2
+# 윈도우 타이틀 및 어플리케이션 상단 노출 문구 변경(Disease Detected Agency -> Disease Diagnosis Agency)
+# 노출 문구 변경에 따른 self.fsm0_label['title']의 frame_width 수정
+# self.fsm0_line_edit['search']에 PlaceholderText(기본 텍스트) 기능 추가
+# 디버그 스크립트 수정
+
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
 from threading import Thread
 from datetime import datetime
 import pandas as pd
-import pickle
 import random
 import sys
 import time
@@ -30,19 +35,16 @@ class Application(QWidget):
         self.fsm1_label = {'reset_notice': QLabel(self), 'cancel_notice': QLabel(self), 'allow_notice': QLabel(self),
                            'line-edit-0_notice': QLabel(self), 'elements_notice': QLabel(self),
                            'question': QLabel(self), 'question_allow': QLabel(self), 'question_deny': QLabel(self)}
-        
         self.fsm0_button = {'search': QPushButton(self), 'eraser': QPushButton(self), 'options': QPushButton(self),
                             'exit': QPushButton(self)}
         self.fsm1_button = {'reset': QPushButton(self), 'cancel': QPushButton(self), 'allow': QPushButton(self), 
                             'question_allow': QPushButton(self), 'question_deny': QPushButton(self)}
-        
         self.fsm0_line_edit = {'search': QLineEdit(self)}
         self.fsm1_line_edit = {'elements': QLineEdit(self)}
-
         self.fsm0_text_browser = QTextBrowser(self)
 
         # Setup GUI(Graphic User Interface) environments
-        window_name = f'DDA(Disease Detected Agency) Client - {datetime.now().strftime("%Y")}/{datetime.now().strftime("%m")}/{datetime.now().strftime("%d")}'
+        window_name = f'DDA(Disease Diagnosis Agency) Client - {datetime.now().strftime("%Y")}/{datetime.now().strftime("%m")}/{datetime.now().strftime("%d")}'
         self.initializeWindow(name=f'{window_name}', rgb=(0, 0, 0), w=1080, h=860)
         self.initializeVariables()
         self.initializeStaticObjects()
@@ -106,7 +108,7 @@ class Application(QWidget):
             # APP Icon 설정
             self.setWindowIcon(QtGui.QIcon('./app_icon/icon_stethoscope.png'))
         except Exception as E:
-            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in {self.initializeWindow.__name__}\nError: {E}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
             self.close()
         else:
             print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Success to initialize window settings.')
@@ -117,7 +119,7 @@ class Application(QWidget):
             self.modified_elements = self.elements
             self.fsm_conditions = [True, {'main': False, 'reset': False, 'cancel': False, 'allow': False}]
         except Exception as E:
-            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in {self.initializeVariables.__name__}\nError: {E}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
         else:
             print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Success to initialize variables.')
 
@@ -127,13 +129,14 @@ class Application(QWidget):
             font.setFamily(self.font)
             font.setBold(True)
             font.setPointSize(20)
-            self.fsm0_label['title'].setText('Disease Detected Agency')
-            self.fsm0_label['title'].setGeometry((self.options['width'] / 2) - (350 / 2), 20, 350, 30)
+            self.fsm0_label['title'].setText('Disease Diagnosis Agency')
+            self.fsm0_label['title'].setGeometry((self.options['width'] / 2) - (400 / 2), 20, 400, 30)
             self.fsm0_label['title'].setStyleSheet('color: rgb(255, 255, 255)')
             self.fsm0_label['title'].setAlignment(Qt.AlignCenter)
             self.fsm0_label['title'].setFont(font)
             font.setBold(False)
             font.setPointSize(18)
+            self.fsm0_line_edit['search'].setPlaceholderText('증상을 입력해주세요')
             self.fsm0_line_edit['search'].setGeometry(50, 80, self.options['width'] - 100 - 100 - 50, 50)
             self.fsm0_line_edit['search'].setStyleSheet('color: rgb(255, 255, 255)')
             self.fsm0_line_edit['search'].setAlignment(Qt.AlignLeft)
@@ -170,6 +173,7 @@ class Application(QWidget):
             self.fsm0_label['eraser_notice'].setStyleSheet('color: rgb(255, 255, 255)')
             self.fsm0_label['eraser_notice'].setAlignment(Qt.AlignCenter)
             self.fsm0_label['eraser_notice'].setFont(font)
+            self.fsm0_label['eraser_notice'].setStyleSheet('color: rgb(255, 255, 255)')
             self.fsm0_button['eraser'].setGeometry(self.options['width'] - 250, self.options['height'] - 110, 60, 60)
             self.fsm0_button['eraser'].setStyleSheet('background: rgb(150, 150, 150)')
             self.fsm0_button['eraser'].setIcon(QtGui.QIcon('./app_icon/icon_eraser.png'))
@@ -274,9 +278,8 @@ class Application(QWidget):
             self.fsm1_button['question_deny'].setStyleSheet('background: rgb(150, 150, 150)')
             self.fsm1_button['question_deny'].setIconSize(QSize(30, 30))
             self.fsm1_button['question_deny'].setIcon(QtGui.QIcon('./app_icon/icon_cancel.png'))
-
         except Exception as E:
-            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in {self.initializeStaticObjects.__name__}\nError: {E}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
             self.close()
         else:
             print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Success to initialize static objects.')
@@ -354,7 +357,7 @@ class Application(QWidget):
             self.fsm1_button['question_deny'].setVisible(self.fsm_conditions[1]['reset'] or self.fsm_conditions[1]['allow'])
             self.fsm1_button['question_deny'].setEnabled(self.fsm_conditions[1]['reset'] or self.fsm_conditions[1]['allow'])
         except Exception as E:
-            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in {self.initializeObjects.__name__}\nError: {E}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
             self.initializeVariables()
             self.initializeStaticObjects()
         else:
@@ -379,7 +382,7 @@ class Application(QWidget):
                 self.fsm0_button['search'].setEnabled(False)
                 self.fsm0_button['search'].setStyleSheet('background: rgb(30, 30, 30)')
         except Exception as E:
-            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in {self.signal_detected_word_length.__name__}\nError: {E}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
 
     # "Search" 버튼 클릭시 이하 이벤트 실행
     def signal_btn_search_clicked(self):
@@ -408,7 +411,7 @@ class Application(QWidget):
         if len(self.fsm0_line_edit['search'].text()):
             org_symptom = self.fsm0_line_edit['search'].text()
             symptom = org_symptom.replace(',', ' ').split()
-            print(f'keywords: {len(symptom)}{symptom}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Debug # keywords: {len(symptom)}{symptom}')
             self.fsm0_line_edit['search'].setText('')
             self.fsm0_label['line-edit_notice'].setVisible(True)
             self.fsm0_button['search'].setEnabled(False)
@@ -418,25 +421,27 @@ class Application(QWidget):
             try:
                 ret_val = self.create_duplication_data(data=symptom)
             except Exception as E:
-                print(f'Error--')
+                print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
                 self.fsm0_label['result_notice'].setText(f'"{org_symptom}"에 대한 진단 결과 "0"건')
                 self.fsm0_text_browser.setText('데이터가 없습니다.')
                 self.fsm0_text_browser.setStyleSheet('color: rgb(255, 0, 0)')
             else:
                 words_length = ret_val.split('\n')
-                print(f'words_length: {len(words_length)}: {words_length}')
+                print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Debug # words_length: {len(words_length)}{words_length}')
                 # 학명 제거를 위한 n개 이상의 연속적인 영문 제거
                 # threshold=n 은 n개 이상 등장시 학명으로 간주하고 지우겠다는 의미
                 ret_val = remove_continuous_english(data=ret_val, threshold=5)
                 items = len(ret_val.split('\n'))
-                self.fsm0_label['result_notice'].setText(f'"{org_symptom}"에 대한 진단 결과 "{items}"건')
                 if len(words_length) > 1:
+                    self.fsm0_label['result_notice'].setText(f'"{org_symptom}"에 대한 진단 결과 "{items}"건')
                     self.fsm0_text_browser.setText(ret_val)
                     self.fsm0_text_browser.setStyleSheet('color: rgb(255, 255, 255)')
                 elif len(words_length[0]):
+                    self.fsm0_label['result_notice'].setText(f'"{org_symptom}"에 대한 진단 결과 "{items}"건')
                     self.fsm0_text_browser.setText(ret_val)
                     self.fsm0_text_browser.setStyleSheet('color: rgb(255, 255, 255)')
                 else:
+                    self.fsm0_label['result_notice'].setText(f'"{org_symptom}"에 대한 진단 결과 "0"건')
                     self.fsm0_text_browser.setText('데이터가 없습니다.')
                     self.fsm0_text_browser.setStyleSheet('color: rgb(255, 0, 0)')
 
@@ -448,7 +453,7 @@ class Application(QWidget):
             self.fsm0_text_browser.setText('')
             self.initializeObject()
         except Exception as E:
-            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in {self.signal_btn_eraser_clicked.__name__}\nError: {E}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
         else:
             print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - clicked "eraser" button.')
 
@@ -459,7 +464,7 @@ class Application(QWidget):
             self.fsm1_line_edit['elements'].setText(str(self.elements))
             self.initializeObject()
         except Exception as E:
-            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in {self.signal_btn_options_clicked.__name__}\nError: {E}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
         else:
             print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - clicked "options" button.')
 
@@ -468,7 +473,7 @@ class Application(QWidget):
         try:
             self.close()
         except Exception as E:
-            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in {self.signal_btn_exit_clicked.__name__}\nError: {E}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
         else:
             print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - clicked "exit" button.')
 
@@ -478,7 +483,7 @@ class Application(QWidget):
             self.fsm_conditions = [False, {'main': False, 'reset': True, 'cancel': False, 'allow': False}]
             self.initializeObject()
         except Exception as E:
-            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in {self.signal_btn_reset_clicked.__name__}\nError: {E}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
         else:
             print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - clicked "reset" button.')
 
@@ -488,7 +493,7 @@ class Application(QWidget):
             self.fsm_conditions = [True, {'main': False, 'reset': False, 'cancel': False, 'allow': False}]
             self.initializeObject()
         except Exception as E:
-            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in {self.signal_btn_cancel_clicked.__name__}\nError: {E}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
         else:
             print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - clicked "cancel" button.')
 
@@ -498,7 +503,7 @@ class Application(QWidget):
             self.fsm_conditions = [False, {'main': False, 'reset': False, 'cancel': False, 'allow': True}]
             self.initializeObject()
         except Exception as E:
-            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in {self.signal_btn_allow_clicked.__name__}\nError: {E}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
         else:
             print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - clicked "allow" button.')
 
@@ -521,7 +526,7 @@ class Application(QWidget):
 
             self.initializeObject()
         except Exception as E:
-            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in {self.signal_btn_question_allow_clicked.__name__}\nError: {E}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
         else:
             print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - clicked "question_allow" button.')
 
@@ -531,7 +536,7 @@ class Application(QWidget):
             self.fsm_conditions = [False, {'main': True, 'reset': False, 'cancel': False, 'allow': False}]
             self.initializeObject()
         except Exception as E:
-            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in {self.signal_btn_question_deny_clicked.__name__}\nError: {E}')
+            print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
         else:
             print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - clicked "question_deny" button.')
 
@@ -562,7 +567,7 @@ class Application(QWidget):
                     self.fsm1_button['allow'].setEnabled(True)
                 self.modified_elements = int(word)
             except Exception as E:
-                print(f'Error: {E}')
+                print(f'[{self.current_time.strftime("%y-%m-%d %H:%M:%S")}] - Unknown error occurred in "{sys._getframe().f_code.co_name}()"\n\t\t\t\t\t  {E}')
                 self.fsm1_line_edit['elements'].setText(str(self.elements))
         else:
             self.fsm1_label['line-edit-0_notice'].setText('정수를 입력해주세요.')
@@ -580,7 +585,7 @@ class Application(QWidget):
                     index_container.append(ret_val.index[j])
                 symptom_index.append(index_container)
                 symptom_list.append(ret_val)
-            print(f'symptom_index: {symptom_index}')
+            # print(f'symptom_index: {symptom_index}')
 
             # 중복된 병명만 리스트에 노출시키기 위한 처리
             duplication_list = []
